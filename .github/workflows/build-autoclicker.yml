@@ -1,0 +1,26 @@
+name: Build AutoClicker
+
+on:
+  push:
+    paths:
+      - "autoclicker/**"
+      - ".github/workflows/build-autoclicker.yml"
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: pip install -r autoclicker/requirements.txt pyinstaller
+      - name: Build executable
+        working-directory: autoclicker
+        run: pyinstaller --onefile --windowed --name AutoClicker autoclicker.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: AutoClicker-windows
+          path: autoclicker/dist/AutoClicker.exe
